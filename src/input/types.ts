@@ -3,6 +3,7 @@ import { HTMLInputTypeAttribute } from 'react';
 export type TextFieldProps = {
     capitalize?: 'none' | 'sentences' | 'words' | 'characters' | undefined,
     type: HTMLInputTypeAttribute,
+    name?: string,
     label?: string;
     value?: string | number;
     placeHolder?: string;

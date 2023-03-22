@@ -1,20 +1,19 @@
-import React from 'react'
-import clsx from 'clsx'
-import styles from './button.module.scss'
-import { ButtonType } from './types'
+import React from "react";
+import clsx from "clsx";
+import styles from "./button.module.scss";
+import { ButtonType } from "./types";
 
-const Button = (primary:any, {label}:ButtonType) => {
-
-    const classes = clsx(styles.button, {
-        [styles.primary]:primary,
-    })
+const Button = ({ primary, label }:any) => {
+  const classes = clsx(styles.button, {
+    [styles.primary]: primary,
+  });
 
   return (
-    <button className={classes} >
-         {/* {label && <label htmlFor="input-field">{label}</label>} */}
-         Login
+    <button className={classes}>
+      {/* {label && <label htmlFor="input-field">{label}</label>} */}
+      {label}
     </button>
-  )
-}
+  );
+};
 
-export default Button
+export default Button;

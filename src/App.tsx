@@ -1,52 +1,67 @@
-import { useCallback, useMemo, useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-import MyInput from './input'
-import { Form } from 'reactstrap'
-import Button from './button'
+import { SetStateAction, useCallback, useMemo, useState } from "react";
+import "./App.css";
+import MyInput from "./input";
+import Button from "./button";
+import axios from "axios";
 
 function App() {
-  const [inputValue, setInputValue] = useState({ phone: "", password: "" });
-  const { phone, password } = inputValue;
+  const [phone, setPhone] = useState("");
+  const [password, setPassword] = useState("");
+  const [vali, setVali] = useState(true);
 
-  const handleChange = useCallback((inputValue:any) => {
-    setInputValue({ phone: inputValue, password: inputValue });
-    console.log(inputValue.phone);
-  },[phone, password])
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+    console.log(phone, password);
+    //check
+    axios.get("http://localhost:3000/users").then((res) => {
+      const string = "";
+      if (string.trim() == "" || string.trim() == null) {
+        console.log("False");
+        setVali(false);
+      }
+      const validUser = res.data.find(
+        (item: any) => item.phone == phone && item.password == password
+      );
+      console.log(validUser);
 
-  const InputPhone = useMemo(() =>{
-    return (
-        <MyInput
-          type="text"
-          value={phone}
-          label="Phone"
-          onChange={handleChange}
-        />
-    )
-  },[])
+      console.log("is valid user = ", validUser ? "true" : "false");
+    });
+  };
 
-  const InputPassWord = useMemo(() =>{
+  const InputPhone = useMemo(() => {
     return (
       <MyInput
-      type="text"
-      value={password}
-      label="Password"
-      onChange={handleChange}
-    />
-    )
-  },[])
+        type="text"
+        value={phone}
+        label="Phone"
+        name="phone"
+        onChange={(e: any) => setPhone(e)}
+      />
+    );
+  }, []);
+
+  const InputPassWord = useMemo(() => {
+    return (
+      <MyInput
+        type="text"
+        name="password"
+        value={password}
+        label="Password"
+        onChange={(e: any) => setPassword(e)}
+      />
+    );
+  }, []);
 
   return (
     <div className="App">
-      <Form>
-      {InputPhone}
-      {InputPassWord}
-      
-      <Button primary label="Login"/>
-    </Form>
+      <form onSubmit={handleSubmit}>
+        {InputPhone}
+        <p>{vali ? "" : "K de trong"}</p>
+        {InputPassWord}
+        <Button primary label="Login" />
+      </form>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
