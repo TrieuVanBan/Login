@@ -1,32 +1,76 @@
-import { SetStateAction, useCallback, useMemo, useState } from "react";
+import { SetStateAction, useCallback, useEffect, useMemo, useState } from "react";
 import "./App.css";
 import MyInput from "./input";
 import Button from "./button";
 import axios from "axios";
 
 function App() {
-  const [phone, setPhone] = useState("");
-  const [password, setPassword] = useState("");
-  const [vali, setVali] = useState(true);
+  const [phone, setPhone] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [isValidation, setisValidation] = useState({
+    phone: '',
+    password: ''
+  });
+
+  const isValid = () => {
+
+    let isValid = true;
+    let errors = { ...isValidation };
+
+    if (phone.trim() == '') {
+      errors.phone = 'Số điện thoại không để trống !';
+      console.log("Số điện thoại không để trống !");
+    } else {
+      errors.phone = '';
+      console.log("Không lỗi");
+    }
+
+    if (password.trim() == '') {
+      errors.password = 'Mật khẩu không để trống !';
+      console.log("Mật khẩu không để trống !");
+    } else if (password.length < 8) {
+      errors.password = 'Mật khẩu ít nhất 8 kí tự';
+    } else {
+      errors.password = '';
+      console.log("Không lỗi");
+    }
+
+    setisValidation(errors);
+    return isValid;
+  }
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    console.log(phone, password);
-    //check
-    axios.get("http://localhost:3000/users").then((res) => {
-      const string = "";
-      if (string.trim() == "" || string.trim() == null) {
-        console.log("False");
-        setVali(false);
-      }
-      const validUser = res.data.find(
-        (item: any) => item.phone == phone && item.password == password
-      );
-      console.log(validUser);
 
-      console.log("is valid user = ", validUser ? "true" : "false");
+    if (isValid()) {
+      axios.get("http://localhost:4000/users")
+        .then((res) => {
+          const isValidUser = res.data.find(
+            (item: any) => {
+              return item.phone == phone && item.password == password
+            }
+      );
+          isValidUser ? alert("Đăng nhập thành công") : alert("Tài khoản hoặc mật khẩu không chính xác");
+          ;
     });
+    }
+
   };
+
+
+  const onChange = useCallback(({ value, name }: { value: string, name: string }) => {
+    switch (name) {
+      case 'phone':
+        setPhone(value);
+        break;
+      case 'password':
+        setPassword(value);
+        break;
+      default:
+        break;
+    }
+
+  }, [])
 
   const InputPhone = useMemo(() => {
     return (
@@ -35,7 +79,7 @@ function App() {
         value={phone}
         label="Phone"
         name="phone"
-        onChange={(e: any) => setPhone(e)}
+        onChange={onChange}
       />
     );
   }, []);
@@ -47,7 +91,7 @@ function App() {
         name="password"
         value={password}
         label="Password"
-        onChange={(e: any) => setPassword(e)}
+        onChange={onChange}
       />
     );
   }, []);
@@ -56,8 +100,9 @@ function App() {
     <div className="App">
       <form onSubmit={handleSubmit}>
         {InputPhone}
-        <p>{vali ? "" : "K de trong"}</p>
+        {isValidation.phone && <span style={{ color: "red", fontSize: "14px" }}>{isValidation.phone}</span>}
         {InputPassWord}
+        {isValidation.password && <span style={{ color: "red", fontSize: "14px", display: "block" }}>{isValidation.password}</span>}
         <Button primary label="Login" />
       </form>
     </div>

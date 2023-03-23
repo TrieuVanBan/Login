@@ -9,6 +9,7 @@ const MyInput = ({ value, label, type, onChange, name }: TextFieldProps) => {
   const handleChange = (e: any) => {
     const { value, name } = e.target;
     onChange({ value, name });
+
   };
   return (
     <div>
