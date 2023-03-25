@@ -8,6 +8,8 @@ const classes = clsx(styles.input);
 const MyInput = ({ value, label, type, onChange, name }: TextFieldProps) => {
   const handleChange = (e: any) => {
     const { value, name } = e.target;
+    console.log("{ value, name }", value, name);
+
     onChange({ value, name });
 
   };

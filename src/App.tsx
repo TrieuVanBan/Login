@@ -12,17 +12,24 @@ function App() {
     password: ''
   });
 
+  function isPhone(number: string) {
+    return /^0+[3,5,7,8,9]{1}[0-9]{1}[1-9]{1}[0-9]{6}$/.test(number);
+  }
+
   const isValid = () => {
 
     let isValid = true;
     let errors = { ...isValidation };
+    // const phoneRegex = /^(0?)(3[2-9]|5[6|8|9]|7[0|6-9]|8[0-6|8|9]|9[0-4|6-9])[0-9]{7}$/;
 
     if (phone.trim() == '') {
       errors.phone = 'Số điện thoại không để trống !';
       console.log("Số điện thoại không để trống !");
+    } else if (!isPhone(phone)) {
+      errors.phone = 'Số điện thoại không đúng định dạng !';
     } else {
       errors.phone = '';
-      console.log("Không lỗi");
+      console.log("Không lỗi số điện thoại");
     }
 
     if (password.trim() == '') {
@@ -54,7 +61,6 @@ function App() {
           ;
     });
     }
-
   };
 
 
