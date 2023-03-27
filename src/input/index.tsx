@@ -1,30 +1,41 @@
 import clsx from "clsx";
-import React from "react";
+import React, { forwardRef, useImperativeHandle, useState } from "react";
 import { TextFieldProps } from "./types";
 import styles from "./input.module.scss";
 
 const classes = clsx(styles.input);
 
-const MyInput = ({ value, label, type, onChange, name }: TextFieldProps) => {
-  const handleChange = (e: any) => {
-    const { value, name } = e.target;
-    console.log("{ value, name }", value, name);
+const MyInput = forwardRef(
+  ({ value, label, type, onChange, name }: TextFieldProps, ref?: any) => {
+    const [valueTextInput, setValueTextInput] = useState("");
 
-    onChange({ value, name });
+    const handleChange = (e: any) => {
+      const { value } = e.target;
+      // onChange({ value });
+      setValueTextInput(value);
+    };
 
-  };
-  return (
-    <div>
-      {label && <label htmlFor="input-field">{label}</label>}
-      <input
-        type={type}
-        name={name}
-        // value={value}
-        className={classes}
-        onChange={handleChange}
-      />
-    </div>
-  );
-};
+    useImperativeHandle(ref, () => ({
+      getValue,
+    }));
+
+    const getValue = () => {
+      return valueTextInput;
+    };
+
+    return (
+      <div>
+        {label && <label htmlFor="input-field">{label}</label>}
+        <input
+          type={type}
+          name={name}
+          // value={value}
+          className={classes}
+          onChange={handleChange}
+        />
+      </div>
+    );
+  }
+);
 
 export default MyInput;
